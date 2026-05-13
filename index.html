@@ -1,1 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Grassroots Connect — Target 10</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0eb;color:#1a1a1a;padding-bottom:40px}
+.header{background:#1a1a1a;color:white;padding:20px 16px 16px}
+.header h1{font-size:20px;font-weight:800;margin-bottom:3px}
+.header p{font-size:12px;color:#999}
+.progress-bar{height:4px;background:#333;margin-top:12px;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:#2ecc71;transition:width .4s ease;border-radius:2px}
+.progress-label{font-size:11px;color:#888;margin-top:4px}
+.card{background:white;margin:10px 12px;border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.card-header{padding:14px 14px 12px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none}
+.company-logo{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:white;flex-shrink:0;text-transform:uppercase}
+.company-info{flex:1;min-width:0}
+.company-name{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.company-sub{font-size:12px;color:#888;margin-top:1px}
+.company-badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+.badge-doors{background:#e8f4fd;color:#2980b9}
+.badge-revenue{background:#fef9e7;color:#b7770d}
+.badge-tech{background:#eafaf1;color:#1e8449}
+.chevron{font-size:12px;color:#ccc;margin-top:4px;transition:transform .2s}
+.card.open .chevron{transform:rotate(180deg)}
+.card-body{display:none;border-top:1px solid #f0f0f0}
+.card.open .card-body{display:block}
+.rationale{padding:10px 14px;background:#f8f9ff;border-left:3px solid #4a7bdf;font-size:12px;color:#555;line-height:1.5}
+.met-company-row{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0}
+.met-company-label{font-size:12px;font-weight:600;color:#666}
+.contacts-section{padding:6px 0}
+.contact-item{padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:12px}
+.contact-item:last-of-type{border-bottom:none}
+.avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;flex-shrink:0;text-transform:uppercase;position:relative;overflow:hidden}
+.avatar img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border-radius:50%;display:none}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:14px;font-weight:600}
+.contact-title{font-size:11px;color:#888;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.contact-actions{display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0}
+.li-btn{display:inline-block;background:#0077b5;color:white;font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;text-decoration:none;letter-spacing:.2px}
+.met-toggle{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;font-weight:600;color:#aaa;background:#f5f5f5;border:none;padding:4px 8px;border-radius:4px;transition:all .15s}
+.met-toggle.done{background:#eafaf1;color:#1e8449}
+.notes-section{padding:10px 14px;border-top:1px solid #f0f0f0}
+.notes-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.notes-area{width:100%;border:1px solid #e0e0e0;border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;min-height:64px;color:#333;background:#fafafa;outline:none;transition:border-color .15s}
+.notes-area:focus{border-color:#4a7bdf;background:white}
+.wa-section{padding:10px 14px 14px;border-top:1px solid #f0f0f0}
+.wa-btn{display:block;width:100%;background:#25d366;color:white;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;text-decoration:none;letter-spacing:.2px}
+.warning-row{padding:8px 14px;background:#fffbe6;border-top:1px solid #fdeea3;font-size:11px;color:#7d6608;display:flex;align-items:center;gap:6px}
+.footer{padding:24px 16px 8px;text-align:center;color:#bbb;font-size:11px}
+</style>
+</head>
+<body>
 
+<div class="header">
+  <h1>Grassroots Connect — Target 10</h1>
+  <p>June 8–11, 2026 &nbsp;•&nbsp; Reno, NV &nbsp;•&nbsp; Tap a card to expand</p>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 10 companies engaged</div>
+</div>
+
+<div id="cards"></div>
+
+<div class="footer">Prepared by EPM Collaborative &nbsp;•&nbsp; May 2026</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Replace with your actual WhatsApp group invite link
+const WA_GROUP_LINK = "https://chat.whatsapp.com/REPLACE_WITH_YOUR_GROUP_LINK";
+
+const COLORS = ["#2c3e50","#1a6b3c","#8e44ad","#c0392b","#d35400","#16a085","#2471a3","#117a65","#7d6608","#1f618d"];
+
+const companies = [
+  {
+    name: "Mountain High Outfitters",
+    initials: "MH",
+    doors: "25 doors",
+    region: "Southeast",
+    badges: [{label:"25 DOORS",type:"doors"}],
+    rationale: "Largest multi-door operator at the event — highest AI readiness assessment leverage. Corporate ops complexity across 25 locations.",
+    contacts: [
+      {name:"Bill Woodall", title:"Director of Retail, Operations & Stores", li:"https://www.linkedin.com/in/billwoodall"},
+      {name:"Brandy Odom", title:"Senior Buyer", li:"https://www.linkedin.com/in/brandy-odom-8673b865"},
+      {name:"Hannah Norris", title:"Director of Visual Merchandising", li:"https://www.linkedin.com/in/hannah-norris-88a566244"},
+      {name:"Ryan Renfroe", title:"Area Manager", li:"https://www.linkedin.com/in/ryan-renfroe-b31995315"},
+    ]
+  },
+  {
+    name: "Gearhead Outfitters",
+    initials: "GO",
+    doors: "23 doors",
+    region: "Multi-state",
+    badges: [{label:"23 DOORS",type:"doors"}],
+    rationale: "Multi-state ops complexity — managing inventory, staff workflows and purchasing across 23 locations. Owner Ted Herget is the priority.",
+    contacts: [
+      {name:"Ted Herget", title:"Owner", li:"https://www.linkedin.com/in/ted-herget-3917b93"},
+      {name:"Megan Gammill", title:"Director of Purchasing & Distribution", li:"https://www.linkedin.com/in/megan-gammill"},
+      {name:"Heath Gammill", title:"Strategy Manager", li:"https://www.linkedin.com/in/heath-gammill-38840816b"},
+      {name:"Jenna Murray", title:"Regional Manager", li:"https://www.linkedin.com/in/jenna-murray-36a902209"},
+    ]
+  },
+  {
+    name: "Great Outdoor Provision Co.",
+    initials: "GO",
+    doors: "9 doors",
+    region: "NC / VA",
+    badges: [{label:"9 DOORS",type:"doors"}],
+    rationale: "Well-run, longstanding regional retailer — fits the Transformation OS pitch. President Chuck Millsaps is the key relationship.",
+    contacts: [
+      {name:"Chuck Millsaps", title:"President", li:"https://www.linkedin.com/in/chuckmillsaps"},
+      {name:"Travis Zarins", title:"VP Merchandise / GMM", li:"https://www.linkedin.com/in/travis-zarins-b580b7b"},
+      {name:"Molly Cherry", title:"VP Retail Support", li:"https://www.linkedin.com/in/molly-cherry-24b03722"},
+      {name:"Chad Pickens", title:"General Manager", li:"https://www.linkedin.com/in/chadpickens"},
+    ]
+  },
+  {
+    name: "JAX Mercantile",
+    initials: "JM",
+    doors: "8 doors",
+    region: "Colorado",
+    badges: [{label:"8 DOORS",type:"doors"}],
+    rationale: "Workflow development candidate on top of the readiness assessment. Owner Jim Quinlan and CFO Becky Allen both likely attending.",
+    contacts: [
+      {name:"Jim Quinlan", title:"Owner", li:"https://www.linkedin.com/in/jim-quinlan-8548516"},
+      {name:"Becky Allen", title:"CFO", li:"https://www.linkedin.com/in/becky-allen"},
+      {name:"Timothy Giarratano", title:"General Manager", li:"https://www.linkedin.com/in/timothy-a-giarratano-9a9b7421a"},
+      {name:"Shannon White", title:"Brand Manager", li:"https://www.linkedin.com/in/shannon-doherty-white-20b92141"},
+    ]
+  },
+  {
+    name: "High Country Outfitters",
+    initials: "HC",
+    doors: "8 doors",
+    region: "Georgia",
+    badges: [{label:"8 DOORS",type:"doors"}],
+    rationale: "Strong regional presence with marketing and ecommerce sophistication — signals readiness for AI workflow integration beyond a basic assessment.",
+    contacts: [
+      {name:"John Sloan", title:"General Manager", li:"https://www.linkedin.com/in/john-sloan-4b947174"},
+      {name:"George Virgo", title:"General Manager", li:"https://www.linkedin.com/in/george-virgo-97b1a82a3"},
+      {name:"Anna Murphy", title:"Senior Marketing Manager", li:"https://www.linkedin.com/in/anna-murphy-482877172"},
+      {name:"Shae Balzer", title:"Senior Ecommerce Manager", li:"https://www.linkedin.com/in/shae-balzer"},
+    ]
+  },
+  {
+    name: "Whole Earth Provision Co.",
+    initials: "WE",
+    doors: "7 doors",
+    region: "Texas",
+    badges: [{label:"7 DOORS",type:"doors"}],
+    rationale: "Multi-location workflow pain maps well to the assessment. Texas-based chain with meaningful scale for a specialty outdoor retailer.",
+    contacts: [
+      {name:"Mandy Wells", title:"Buying Team Manager", li:"https://www.linkedin.com/in/mandy-wells-42124657"},
+    ],
+    warning: "Limited data — only 1 contact found. Identify additional contacts on the floor."
+  },
+  {
+    name: "Walkabout Outfitter",
+    initials: "WO",
+    doors: "6 doors",
+    region: "Virginia",
+    badges: [{label:"6 DOORS",type:"doors"}],
+    rationale: "Good pilot-size multi-door fit. CEO is in the system and likely attending — ideal candidate for a direct conversation.",
+    contacts: [
+      {name:"Suzanne Mayerchak", title:"Chief Executive Officer", li:"https://www.linkedin.com/in/suzanne-mayerchak-573aa674"},
+      {name:"Tina Miller", title:"Owner", li:"https://www.linkedin.com/in/tina-miller-608263332"},
+    ]
+  },
+  {
+    name: "Outdoor Sports Center",
+    initials: "OS",
+    doors: "Single location",
+    region: "Connecticut",
+    badges: [{label:"$57M+ REV",type:"revenue"}],
+    rationale: "$57M revenue with only 44 people. Revenue-per-head makes the AI assessment ROI obvious — a lean team running serious volume has no room for inefficiency.",
+    contacts: [
+      {name:"Jack Maxwell", title:"Owner", li:"https://www.linkedin.com/in/jack-maxwell-471b5734"},
+      {name:"William Maxwell", title:"VP", li:"https://www.linkedin.com/in/william-maxwell-11a98313a"},
+    ]
+  },
+  {
+    name: "Bearcub Outfitters",
+    initials: "BC",
+    doors: "Single location",
+    region: "Michigan",
+    badges: [{label:"$42M REV",type:"revenue"}],
+    rationale: "$42M on a team of 10. Extremely lean — the economics of AI workflow development are compelling. Owner Becky is the person to find.",
+    contacts: [
+      {name:"Becky Philipp-Kranig", title:"Owner", li:"https://www.linkedin.com/in/becky-philipp-kranig-38b039b2"},
+    ],
+    warning: "Very lean team — owner is almost certainly the right conversation."
+  },
+  {
+    name: "Rutabaga Paddlesports",
+    initials: "RP",
+    doors: "Single location",
+    region: "Wisconsin",
+    badges: [{label:"$31M REV",type:"revenue"},{label:"SHOPIFY + HUBSPOT",type:"tech"}],
+    rationale: "Most tech-forward single-location account. Soft connection via Eddie Line — lowest friction intro on the list. Already running Shopify + HubSpot.",
+    contacts: [
+      {name:"Ethan Scheiwe", title:"Sales Manager & Product Manager", li:"https://www.linkedin.com/in/ethan-scheiwe-750a71a2"},
+    ],
+    warning: "⚡ Warm intro via Eddie Line — easiest entry point on the list if Gabe knows them.",
+    tip: true
+  },
+];
+
+// ── AVATAR INITIALS ──────────────────────────────────────────────────────────
+function getInitials(name){
+  const parts = name.trim().split(' ');
+  if(parts.length>=2) return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+  return name.slice(0,2).toUpperCase();
+}
+
+function avatarColor(name){
+  let h=0;for(let i=0;i<name.length;i++)h=name.charCodeAt(i)+((h<<5)-h);
+  const colors=["#e74c3c","#3498db","#2ecc71","#9b59b6","#e67e22","#1abc9c","#e91e63","#ff5722","#607d8b","#795548","#f39c12","#27ae60"];
+  return colors[Math.abs(h)%colors.length];
+}
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+function loadState(){try{return JSON.parse(localStorage.getItem('gc26')||'{}')}catch{return{}}}
+function saveState(s){localStorage.setItem('gc26',JSON.stringify(s))}
+let state = loadState();
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function updateProgress(){
+  let engaged=0;
+  companies.forEach((c,ci)=>{
+    const cs=state[ci]||{};
+    const anyMet = (cs.contacts||[]).some(Boolean) || cs.companyMet;
+    if(anyMet) engaged++;
+  });
+  const pct=Math.round(engaged/companies.length*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=engaged+' of '+companies.length+' companies engaged';
+}
+
+// ── WHATSAPP ─────────────────────────────────────────────────────────────────
+function openWA(companyName, contactName){
+  const text = encodeURIComponent('📍 '+companyName+(contactName?' — '+contactName:'')+'\n\nNotes: ');
+  const link = WA_GROUP_LINK === "https://chat.whatsapp.com/REPLACE_WITH_YOUR_GROUP_LINK"
+    ? 'whatsapp://send?text='+text
+    : WA_GROUP_LINK;
+  window.open(link,'_blank');
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  const container = document.getElementById('cards');
+  container.innerHTML='';
+  companies.forEach((company, ci)=>{
+    const cs = state[ci] || {};
+    const contactsMet = cs.contacts || new Array(company.contacts.length).fill(false);
+    const anyMet = contactsMet.some(Boolean);
+    const color = COLORS[ci % COLORS.length];
+
+    const card = document.createElement('div');
+    card.className = 'card' + (cs.open ? ' open' : '');
+
+    // Header
+    const badgeHTML = company.badges.map(b=>`<span class="badge badge-${b.type}">${b.label}</span>`).join('');
+    card.innerHTML = `
+      <div class="card-header" onclick="toggleCard(${ci})">
+        <div class="company-logo" style="background:${color}">${company.initials}</div>
+        <div class="company-info">
+          <div class="company-name">${company.name}</div>
+          <div class="company-sub">${company.doors} &nbsp;•&nbsp; ${company.region}</div>
+          <div class="company-badges">${badgeHTML}${anyMet?'<span class="badge" style="background:#eafaf1;color:#1e8449">✓ ENGAGED</span>':''}</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="rationale">${company.rationale}</div>
+        ${company.warning?`<div class="warning-row">${company.tip?'⚡':'⚠️'} ${company.warning}</div>`:''}
+        <div class="contacts-section">
+          ${company.contacts.map((contact, ki)=>{
+            const met = contactsMet[ki] || false;
+            const initials = getInitials(contact.name);
+            const aColor = avatarColor(contact.name);
+            const slug = contact.li.replace(/.*\/in\//, '').replace(/\/?$/, '');
+            const photoSrc = 'https://unavatar.io/linkedin/' + slug;
+            return `
+              <div class="contact-item">
+                <div class="avatar" style="background:${aColor}">${initials}<img src="${photoSrc}" onload="this.style.display='block'" onerror="this.remove()"></div>
+                <div class="contact-info">
+                  <div class="contact-name">${contact.name}</div>
+                  <div class="contact-title">${contact.title}</div>
+                </div>
+                <div class="contact-actions">
+                  <a class="li-btn" href="${contact.li}" target="_blank">LinkedIn</a>
+                  <button class="met-toggle ${met?'done':''}" onclick="toggleMet(event,${ci},${ki})" data-ci="${ci}" data-ki="${ki}">
+                    ${met?'✓ Met':'Met?'}
+                  </button>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+        <div class="notes-section">
+          <div class="notes-label">Notes</div>
+          <textarea class="notes-area" placeholder="What did you discuss?" oninput="saveNote(${ci},this.value)">${cs.notes||''}</textarea>
+        </div>
+        <div class="wa-section">
+          <a class="wa-btn" onclick="openWA('${company.name.replace(/'/g,"\\'")}', '')">
+            💬 Send notes to WhatsApp group
+          </a>
+        </div>
+      </div>`;
+
+    container.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function toggleCard(ci){
+  if(!state[ci]) state[ci]={};
+  state[ci].open = !state[ci].open;
+  saveState(state);
+  render();
+}
+
+function toggleMet(e, ci, ki){
+  e.stopPropagation();
+  if(!state[ci]) state[ci]={};
+  if(!state[ci].contacts) state[ci].contacts = new Array(companies[ci].contacts.length).fill(false);
+  state[ci].contacts[ki] = !state[ci].contacts[ki];
+  state[ci].open = true;
+  saveState(state);
+  render();
+}
+
+function saveNote(ci, val){
+  if(!state[ci]) state[ci]={};
+  state[ci].notes = val;
+  state[ci].open = true;
+  saveState(state);
+  updateProgress();
+  // Update engaged badge without full re-render
+  updateProgress();
+}
+
+render();
+</script>
+</body>
+</html>
